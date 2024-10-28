@@ -1,5 +1,6 @@
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../config";
 async function generateToken() {
     return crypto.randomBytes(20).toString('hex');
 }
@@ -42,11 +43,19 @@ function checkPasswordStrength(password: string) {
 }
 async function generateJWTToken(payload: any){
     try {
-        const token = jwt.sign(payload, "secretkey")
+        const token = jwt.sign(payload, SECRET_KEY)
         return token
     } catch (error) {
         console.error(error);
         return;
     }
 }
-export { generateTokenAndExpiry, checkPasswordStrength, generateJWTToken }
+function extractInfoFromJWT(payload: string){
+    try {
+        const extractedData = jwt.verify(payload, SECRET_KEY)
+        return extractedData;
+    } catch (error) {
+        throw new Error()
+    }
+}
+export { generateTokenAndExpiry, checkPasswordStrength, generateJWTToken, extractInfoFromJWT }

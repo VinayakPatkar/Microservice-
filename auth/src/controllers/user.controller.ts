@@ -13,7 +13,7 @@ export function userResponse(user: any){
 }
 export function generatePayload(user: any){
     return {
-        _id: user._id
+        _id: user.id
     }
 }
 export const usersignup = async( req: Request, res: Response, next: NextFunction ) : Promise<any> => {
@@ -101,15 +101,15 @@ export const loginUser = async( req: Request, res: Response, next: NextFunction 
         return res.status(500).json({message: "Server Error"});
     }
 }
-/*export const sendVerificationEmail = async(req: Request, res: Response, next: NextFunction) : Promise<any> => {
+export const sendVerificationEmail = async(req: Request, res: Response, next: NextFunction) : Promise<any> => {
     try {
-        const { email } = req.body;
-        const user = await userModel.findOne({email: email});
+        const { _id } = req.user;
+        const user = await userModel.findOne({_id: _id})
         if(!user){
             return res.status(200).json({message: "Verification mail sent if email exists"});
         }
         if(user.isEmailVerified){
-            return res.stat
+            return res.status(200).json({message: "Email already verified"});
         }
         const { verifyToken, EMAIL_VERIFY_TOKEN_EXPIRY_TIME} = await generateTokenAndExpiry("verification");
         const verificationLink =  `http://localhost:8000/auth/verify?v=${verifyToken}`;
@@ -129,7 +129,7 @@ export const loginUser = async( req: Request, res: Response, next: NextFunction 
         console.error(error);
         return res.status(500).json({err: error});
     }
-}*/
+}
 export const resetpasswordreqbyemail = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { email } = req.body;
@@ -174,7 +174,7 @@ export const resetpassword = async (req: Request, res: Response, next: NextFunct
 
         const user = await userModel.findOne({
             resetPasswordToken: r,
-            resetPasswordExpires: { $gt: new Date() },  // Check if token is still valid
+            resetPasswordExpires: { $gt: new Date() },
         });
 
         if (!user) {
@@ -192,3 +192,8 @@ export const resetpassword = async (req: Request, res: Response, next: NextFunct
         return res.status(500).json({ err: error });
     }
 };
+
+
+export const protectedd = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    return res.status(200).json({message: "no"})
+}

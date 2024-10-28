@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
+import cookieParser from 'cookie-parser';
 
 import { PORT, MONGO_URI } from "./config";
 import { userrouter } from "./routes";
+
 
 const app = express();
 
@@ -18,6 +20,7 @@ try {
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(userrouter);
 
